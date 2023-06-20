@@ -37,7 +37,7 @@ defmodule App.AiAgent do
           %{"finish_reason" => "stop", "message" => message} ->
             Logger.info("stop: #{inspect(message)}")
 
-            {:reply, message["content"], {messages ++ [message], opts}}
+            {:reply, {:ok, message["content"]}, {messages ++ [message], opts}}
 
           %{"finish_reason" => "function_call", "message" => message} ->
             Logger.info("function_call: #{inspect(message)}")
