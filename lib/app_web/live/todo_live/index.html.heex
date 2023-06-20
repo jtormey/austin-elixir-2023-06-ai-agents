@@ -2,7 +2,10 @@
   Shopping List
 </.header>
 
-<div class="border border-zinc-200 divide-y divide-zinc-200 rounded overflow-hidden">
+<div
+  :if={@todos != []}
+  class="border border-zinc-200 divide-y divide-zinc-200 rounded overflow-hidden"
+>
   <div :for={todo <- @todos} class="p-4 flex items-center gap-2">
     <.icon name="hero-check-circle" class="text-zinc-500" />
     <span class="text-zinc-700"><%= todo %></span>

@@ -6,14 +6,15 @@ defmodule Mix.Tasks.Ai do
 
   @impl true
   def run(_args) do
-    Mix.Task.run("app.start")
+    Mix.Task.run("phx.server")
 
     Logger.configure(level: :warn)
 
+    Process.sleep(1000)
+
     {:ok, _agent_pid} = AiAgent.start_link(functions: AiFunctions)
 
-    IO.puts("")
-    IO.puts("AI agent is ready.\n")
+    IO.puts("\nAI agent is ready.\n")
 
     ask_for_input()
   end
@@ -26,14 +27,18 @@ defmodule Mix.Tasks.Ai do
       "exit" ->
         :ok
 
+      "" ->
+        IO.puts("")
+        ask_for_input()
+
       content ->
         case AiAgent.chat(content) do
           {:ok, reply} ->
-            IO.puts("agent> #{reply}")
+            IO.puts("\nagent> #{reply}\n")
             ask_for_input()
 
           {:error, reason} ->
-            IO.puts("error> #{inspect(reason)}")
+            IO.puts("\nerror> #{inspect(reason)}\n")
         end
     end
   end

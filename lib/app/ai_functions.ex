@@ -109,7 +109,7 @@ defmodule App.AiFunctions do
 
       {:ok, %{status: 200, body: %{"hits" => hits}}} ->
         hits
-        |> Enum.take(5)
+        |> Enum.take(4)
         |> Enum.map_join("\n", fn %{"recipe" => recipe} ->
           """
           #{recipe["label"]}

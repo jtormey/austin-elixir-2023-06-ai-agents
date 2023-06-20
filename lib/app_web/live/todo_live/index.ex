@@ -6,7 +6,7 @@ defmodule AppWeb.TodoLive.Index do
       Phoenix.PubSub.subscribe(App.PubSub, "todos")
     end
 
-    {:ok, assign(socket, :todos, ["milk"])}
+    {:ok, assign(socket, :todos, [])}
   end
 
   def handle_info({:new_todo, content}, socket) do

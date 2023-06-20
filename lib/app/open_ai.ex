@@ -2,7 +2,7 @@ defmodule App.OpenAi do
   @spec chat(Keyword.t()) :: Tesla.Env.result()
   def chat(opts) do
     Tesla.post(new(), "/chat/completions", %{
-      "model" => Keyword.get(opts, :model, "gpt-3.5-turbo-0613"),
+      "model" => Keyword.get(opts, :model, "gpt-4-0613"),
       "messages" => Keyword.fetch!(opts, :messages),
       "functions" => Keyword.get(opts, :functions, [])
     })
