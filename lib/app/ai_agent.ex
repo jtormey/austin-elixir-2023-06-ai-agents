@@ -12,7 +12,7 @@ defmodule App.AiAgent do
   ## API
 
   def chat(content) do
-    GenServer.call(__MODULE__, {:chat, content})
+    GenServer.call(__MODULE__, {:chat, content}, :infinity)
   end
 
   ## Callbacks

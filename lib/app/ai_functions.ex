@@ -1,4 +1,6 @@
 defmodule App.AiFunctions do
+  alias App.Recipes
+
   def functions() do
     [
       %{
@@ -23,6 +25,20 @@ defmodule App.AiFunctions do
           },
           "required" => ["timezone"]
         }
+      },
+      %{
+        "name" => "search_recipes",
+        "description" => "Responds with a list of recipes with ingredients, or \"No results\".",
+        "parameters" => %{
+          "type" => "object",
+          "properties" => %{
+            "query" => %{
+              "type" => "string",
+              "description" => "A string of search terms for querying the recipes database."
+            }
+          },
+          "required" => ["search_query"]
+        }
       }
     ]
   end
@@ -33,6 +49,10 @@ defmodule App.AiFunctions do
 
   def call_function("get_current_time", %{"timezone" => timezone}) do
     get_current_time(timezone)
+  end
+
+  def call_function("search_recipes", %{"query" => query}) do
+    search_recipes(query)
   end
 
   ## Implementations
@@ -55,5 +75,25 @@ defmodule App.AiFunctions do
     DateTime.utc_now()
     |> DateTime.shift_zone!(timezone)
     |> to_string()
+  end
+
+  @doc """
+  Searches recipes database.
+  """
+  def search_recipes(query) do
+    case Recipes.search(q: query) do
+      {:ok, %{status: 200, body: %{"hits" => []}}} ->
+        "No results."
+
+      {:ok, %{status: 200, body: %{"hits" => hits}}} ->
+        hits
+        |> Enum.take(5)
+        |> Enum.map_join("\n", fn %{"recipe" => recipe} ->
+          """
+          #{recipe["label"]}
+          #{Enum.join(recipe["ingredientLines"], "\n")}
+          """
+        end)
+    end
   end
 end
