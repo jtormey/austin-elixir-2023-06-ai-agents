@@ -28,7 +28,7 @@ defmodule App.AiFunctions do
       },
       %{
         "name" => "search_recipes",
-        "description" => "Responds with a list of recipes with ingredients, or \"No results\".",
+        "description" => "Responds with a list of recipes with ingredients, or \"No results.\"",
         "parameters" => %{
           "type" => "object",
           "properties" => %{
@@ -38,6 +38,24 @@ defmodule App.AiFunctions do
             }
           },
           "required" => ["search_query"]
+        }
+      },
+      %{
+        "name" => "add_to_shopping_list",
+        "description" =>
+          "Adds a list of items to the current user's shopping list. Responds with \"Added.\"",
+        "parameters" => %{
+          "type" => "object",
+          "properties" => %{
+            "items" => %{
+              "type" => "array",
+              "items" => %{
+                "type" => "string"
+              },
+              "description" => "List of new items with quantities to pick up from the store."
+            }
+          },
+          "required" => ["items"]
         }
       }
     ]
@@ -53,6 +71,10 @@ defmodule App.AiFunctions do
 
   def call_function("search_recipes", %{"query" => query}) do
     search_recipes(query)
+  end
+
+  def call_function("add_to_shopping_list", %{"items" => items}) do
+    add_to_shopping_list(items)
   end
 
   ## Implementations
@@ -95,5 +117,17 @@ defmodule App.AiFunctions do
           """
         end)
     end
+  end
+
+  @doc """
+  Adds a list of items to the users shopping list.
+  """
+  def add_to_shopping_list(items) when is_list(items) do
+    for item <- items do
+      Phoenix.PubSub.broadcast(App.PubSub, "todos", {:new_todo, item})
+      Process.sleep(250)
+    end
+
+    "Added."
   end
 end

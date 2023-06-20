@@ -18,6 +18,10 @@ defmodule AppWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :home
+
+    live_session :public do
+      live "/todo", TodoLive.Index, :index
+    end
   end
 
   # Other scopes may use custom stacks.
