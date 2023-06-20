@@ -36,13 +36,14 @@ defmodule App.AiAgent do
         case choice do
           %{"finish_reason" => "stop", "message" => message} ->
             Logger.info("stop: #{inspect(message)}")
+
             {:reply, message["content"], {messages ++ [message], opts}}
 
           %{"finish_reason" => "function_call", "message" => message} ->
             Logger.info("function_call: #{inspect(message)}")
 
             %{"name" => name, "arguments" => args} = message["function_call"]
-            response = functions.call_function(name, args)
+            response = functions.call_function(name, Jason.decode!(args))
             chat_ai(build_message(:function, name, response), {messages ++ [message], opts})
         end
 

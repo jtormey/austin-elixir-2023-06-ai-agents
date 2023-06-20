@@ -33,6 +33,7 @@ defmodule App.MixProject do
   defp deps do
     [
       {:tesla, "~> 1.7"},
+      {:tzdata, "~> 1.1"},
       {:phoenix, "~> 1.7.3"},
       {:phoenix_html, "~> 3.3"},
       {:phoenix_live_reload, "~> 1.2", only: :dev},
