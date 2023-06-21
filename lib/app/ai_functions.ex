@@ -13,6 +13,29 @@ defmodule App.AiFunctions do
         }
       },
       %{
+        "name" => "search_google",
+        "description" => "Scrapes Google given a search query.",
+        "parameters" => %{
+          "type" => "object",
+          "properties" => %{
+            "search" => %{
+              "type" => "string",
+              "description" => "The search phrase to pass to Google."
+            }
+          },
+          "required" => ["search"]
+        }
+      },
+      %{
+        "name" => "scrape_elixir_news",
+        "description" => "Scrapes the web for news on the Elixir programming language.",
+        "parameters" => %{
+          "type" => "object",
+          "properties" => %{},
+          "required" => []
+        }
+      },
+      %{
         "name" => "get_current_time",
         "description" => "Returns the current time in ISO-8601 format.",
         "parameters" => %{
@@ -67,6 +90,14 @@ defmodule App.AiFunctions do
 
   def call_function("get_current_time", %{"timezone" => timezone}) do
     get_current_time(timezone)
+  end
+
+  def call_function("search_google", %{"search" => search}) do
+    search_google(search)
+  end
+
+  def call_function("scrape_elixir_news", %{}) do
+    scrape_elixir_news()
   end
 
   def call_function("search_recipes", %{"query" => query}) do
@@ -129,5 +160,19 @@ defmodule App.AiFunctions do
     end
 
     "Added."
+  end
+
+  def search_google(query) do
+    case Tesla.get("https://www.google.com/search", query: [q: query]) do
+      {:ok, %{status: 200, body: raw_body}} ->
+        raw_body
+    end
+  end
+
+  def scrape_elixir_news() do
+    case Tesla.get("https://elixirweekly.net/") do
+      {:ok, %{status: 200, body: raw_body}} ->
+        raw_body
+    end
   end
 end

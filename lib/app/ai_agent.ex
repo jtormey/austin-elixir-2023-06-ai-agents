@@ -23,6 +23,9 @@ defmodule App.AiAgent do
 
   def handle_call({:chat, content}, _from, {messages, opts}) do
     chat_ai(build_message(:user, content), {messages, opts})
+    |> tap(fn {:reply, _message, {messages, _opts}} ->
+      IO.inspect(messages, label: :messages)
+    end)
   end
 
   ## Private
